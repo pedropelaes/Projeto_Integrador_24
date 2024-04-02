@@ -21,29 +21,28 @@ PCA=(CP*100)//PV
 #Receita bruta:
 RB=PV-CP
 PRB=100-PCA
-#Custofixo:
-PCF=(CF*PRB)//RB
-#Comissão
-VCV=(CV*RB)//PRB
 #ValorImposto
-VI=(IV*RB)//PRB
-#OutrosCustos
-OC=CF+VCV+VI
-POC=(OC*PRB)//RB
+VI=(IV/100)*PV
+#Comissão
+VCV=(CV/100)*PV
 #Rentabilidade
-R=RB-OC
-
+R=(ML/100)*PV
+#Custofixo:
+VCF=(CF/100)*PV
+#OutrosCustos
+OC=VCF+VCV+VI
+POC=CF+CV+IV
 
 tabela = [
     ["Descrição", "Valor", "%"],
-    ["A.Preço de Venda:", PV, "100"],
-    ["B.Custo de Aquisição:", CP, int(PCA)],
-    ["C.Receita Bruta(A-B):", RB, int(PRB)],
-    ["D.Custo Fixo/Administrativo:", CF, int(PCF)],
-    ["E.Comissão de vendas:", VCV, int(CV)],
-    ["F.Impostos:", VI, int(IV)],
-    ["G.Outros Custos(D+E+F):", OC, int(POC)],
-    ["H.Rentabilidade(C-G):", R, int(ML)]
+    ["A.Preço de Venda:", PV, "100%"],
+    ["B.Custo de Aquisição:", CP, f"{PCA}%"],
+    ["C.Receita Bruta(A-B):", RB, f"{PRB}%"],
+    ["D.Custo Fixo/Administrativo:", VCF, f"{CF}%"],
+    ["E.Comissão de vendas:", VCV, f"{CV}%"],
+    ["F.Impostos:", VI, f"{IV}%"],
+    ["G.Outros Custos(D+E+F):", OC, f"{POC}%"],
+    ["H.Rentabilidade(C-G):", R, f"{ML}%"]
 ]
 
 print(tabulate(tabela, headers="firstrow", tablefmt="rounded_outline", floatfmt=".2f"))
