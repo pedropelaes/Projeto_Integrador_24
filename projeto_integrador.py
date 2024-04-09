@@ -4,7 +4,7 @@ from tabulate import tabulate
 #Leitura dos dados:
 cod_prod=int(input("Digite o código do produto: "))
 nome_prod=str(input("Digite o nome do produto: "))
-descrição=str(input("Descreva o produto: "))
+descricao=str(input("Descreva o produto: "))
 CP=float(input("Digite o custo do produto: "))
 CF=float(input("Digite o custo fixo/adiministrativo: "))
 CV=float(input("Digite a comissão de venda: "))
@@ -12,7 +12,11 @@ IV=float(input("Digite os impostos sobre a venda: "))
 ML=float(input("Digite a margem de lucro desejada: "))
 
 #Calculo do preço de venda:
-PV = CP/(1-((CF+CV+IV+ML)/100))
+soma=CF+CV+IV+ML
+if soma>100:
+    soma = soma * -1
+
+PV = CP/(1-((soma)/100))
 #################################
 
 
