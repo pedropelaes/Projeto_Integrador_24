@@ -2,8 +2,9 @@ from tabulate import tabulate
 import oracledb
 import getpass
 
+#conexão ao banco de dados
 userpwd = getpass.getpass("Enter password: ")
-connection = oracledb.connect(user="PEDROMALINCONICO", password=userpwd,
+connection = oracledb.connect(user="PEDRO", password=userpwd,
                               host="localhost", port=1521, service_name="XEPDB1")
 cursor = connection.cursor()
 
@@ -44,6 +45,7 @@ VCF=(CF/100)*PV
 OC=VCF+VCV+VI
 POC=CF+CV+IV
 
+#organização e impressão da tabela
 tabela = [
     ["Descrição", "Valor", "%"],
     ["A.Preço de Venda:", PV, "100%"],
@@ -71,13 +73,30 @@ elif ML<0:
     print("Prejuízo")
 ######################################
 
-cursor.execute("insert into Projeto_Integrador values (:1, :2, :3, :4, :5, :6, :7, :8)",
-               (1, cod_prod)
-               (2, nome_prod)
-               (3, descricao)
-               (4, CP)
-               (5, CF)
-               (6, CV)
-               (7, IV)
-               (8, ML))
+#Inserção dos valores no banco de dados
+dados = [
+    (cod_prod, nome_prod, descricao, CP, VCF, VCV, VI, R),
+]
+
+cursor.executemany("INSERT INTO Projeto_Integrador (COD_PROD, NOME_PROD, DESCRICAO, CP, CF, CV, IV, ML) VALUES (:1, :2, :3, :4, :5, :6, :7, :8)", dados)
+print("Valores inseridos no banco de dados")
 connection.commit()
+
+#Visualização do banco de dados
+cursor.execute("SELECT * FROM Projeto_Integrador")
+visualização = cursor.fetchall()
+
+for fileira in visualização:
+    print(f"{fileira}")
+
+#apagar dados
+select = input("Digite truncate para apagar todos os dados da tabela ou apagar para apagar um produto especifico: ")
+if select == 'truncate':
+    cursor.execute("TRUNCATE TABLE Projeto_Integrador")
+elif select == 'apagar':
+    condição = "COD_PROD = :código"
+    código = input("Digite o código do produto que deseja apagar: ")
+    cursor.executemany("DELETE FROM Projeto_Integrador WHERE " + condição, código=código)
+
+cursor.close
+connection.close()

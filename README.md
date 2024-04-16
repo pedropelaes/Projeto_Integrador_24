@@ -2,5 +2,6 @@ Repositório do projeto integrador do curso de engenharia de software PUC Campin
 preço de venda de um produto e ajudar o usuário a controlar o lucro de seu negócio, por meio da linguagem python. 
 
 Bibliotecas Utilizadas:
-Pandas:https://pypi.org/project/pandas/
 Tabulate:https://pypi.org/project/tabulate/
+Oracledb:https://pypi.org/project/oracledb/
+Getpass:https://docs.python.org/pt-br/3/library/getpass.html
