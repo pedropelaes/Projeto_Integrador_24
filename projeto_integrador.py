@@ -1,5 +1,12 @@
-import pandas as pd 
 from tabulate import tabulate
+import oracledb
+import getpass
+
+userpwd = getpass.getpass("Enter password: ")
+connection = oracledb.connect(user="PEDROMALINCONICO", password=userpwd,
+                              host="localhost", port=1521, service_name="XEPDB1")
+cursor = connection.cursor()
+
 
 #Leitura dos dados:
 cod_prod=int(input("Digite o código do produto: "))
@@ -63,3 +70,14 @@ elif ML==0:
 elif ML<0:
     print("Prejuízo")
 ######################################
+
+cursor.execute("insert into Projeto_Integrador values (:1, :2, :3, :4, :5, :6, :7, :8)",
+               (1, cod_prod)
+               (2, nome_prod)
+               (3, descricao)
+               (4, CP)
+               (5, CF)
+               (6, CV)
+               (7, IV)
+               (8, ML))
+connection.commit()
