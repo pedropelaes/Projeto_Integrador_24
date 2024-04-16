@@ -1,10 +1,18 @@
-import pandas as pd 
 from tabulate import tabulate
+import oracledb
+import getpass
+
+#conexão ao banco de dados
+userpwd = getpass.getpass("Enter password: ")
+connection = oracledb.connect(user="PEDRO", password=userpwd,
+                              host="localhost", port=1521, service_name="XEPDB1")
+cursor = connection.cursor()
+
 
 #Leitura dos dados:
 cod_prod=int(input("Digite o código do produto: "))
 nome_prod=str(input("Digite o nome do produto: "))
-descrição=str(input("Descreva o produto: "))
+descricao=str(input("Descreva o produto: "))
 CP=float(input("Digite o custo do produto: "))
 CF=float(input("Digite o custo fixo/adiministrativo: "))
 CV=float(input("Digite a comissão de venda: "))
@@ -12,7 +20,11 @@ IV=float(input("Digite os impostos sobre a venda: "))
 ML=float(input("Digite a margem de lucro desejada: "))
 
 #Calculo do preço de venda:
-PV = CP/(1-((CF+CV+IV+ML)/100))
+soma=CF+CV+IV+ML
+if soma>100:
+    soma = soma * -1
+
+PV = CP/(1-((soma)/100))
 #################################
 
 
@@ -21,29 +33,29 @@ PCA=(CP*100)//PV
 #Receita bruta:
 RB=PV-CP
 PRB=100-PCA
-#Custofixo:
-PCF=(CF*PRB)//RB
-#Comissão
-VCV=(CV*RB)//PRB
 #ValorImposto
-VI=(IV*RB)//PRB
-#OutrosCustos
-OC=CF+VCV+VI
-POC=(OC*PRB)//RB
+VI=(IV/100)*PV
+#Comissão
+VCV=(CV/100)*PV
 #Rentabilidade
-R=RB-OC
+R=(ML/100)*PV
+#Custofixo:
+VCF=(CF/100)*PV
+#OutrosCustos
+OC=VCF+VCV+VI
+POC=CF+CV+IV
 
-
+#organização e impressão da tabela
 tabela = [
     ["Descrição", "Valor", "%"],
-    ["A.Preço de Venda:", PV, "100"],
-    ["B.Custo de Aquisição:", CP, int(PCA)],
-    ["C.Receita Bruta(A-B):", RB, int(PRB)],
-    ["D.Custo Fixo/Administrativo:", CF, int(PCF)],
-    ["E.Comissão de vendas:", VCV, int(CV)],
-    ["F.Impostos:", VI, int(IV)],
-    ["G.Outros Custos(D+E+F):", OC, int(POC)],
-    ["H.Rentabilidade(C-G):", R, int(ML)]
+    ["A.Preço de Venda:", PV, "100%"],
+    ["B.Custo de Aquisição:", CP, f"{PCA}%"],
+    ["C.Receita Bruta(A-B):", RB, f"{PRB}%"],
+    ["D.Custo Fixo/Administrativo:", VCF, f"{CF}%"],
+    ["E.Comissão de vendas:", VCV, f"{CV}%"],
+    ["F.Impostos:", VI, f"{IV}%"],
+    ["G.Outros Custos(D+E+F):", OC, f"{POC}%"],
+    ["H.Rentabilidade(C-G):", R, f"{ML}%"]
 ]
 
 print(tabulate(tabela, headers="firstrow", tablefmt="rounded_outline", floatfmt=".2f"))
@@ -60,3 +72,31 @@ elif ML==0:
 elif ML<0:
     print("Prejuízo")
 ######################################
+
+#Inserção dos valores no banco de dados
+dados = [
+    (cod_prod, nome_prod, descricao, CP, VCF, VCV, VI, R),
+]
+
+cursor.executemany("INSERT INTO Projeto_Integrador (COD_PROD, NOME_PROD, DESCRICAO, CP, CF, CV, IV, ML) VALUES (:1, :2, :3, :4, :5, :6, :7, :8)", dados)
+print("Valores inseridos no banco de dados")
+connection.commit()
+
+#Visualização do banco de dados
+cursor.execute("SELECT * FROM Projeto_Integrador")
+visualização = cursor.fetchall()
+
+for fileira in visualização:
+    print(f"{fileira}")
+
+#apagar dados
+select = input("Digite truncate para apagar todos os dados da tabela ou apagar para apagar um produto especifico: ")
+if select == 'truncate':
+    cursor.execute("TRUNCATE TABLE Projeto_Integrador")
+elif select == 'apagar':
+    condição = "COD_PROD = :código"
+    código = input("Digite o código do produto que deseja apagar: ")
+    cursor.executemany("DELETE FROM Projeto_Integrador WHERE " + condição, código=código)
+
+cursor.close
+connection.close()
