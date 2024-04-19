@@ -90,13 +90,17 @@ for fileira in visualização:
     print(f"{fileira}")
 
 #apagar dados
-select = input("Digite truncate para apagar todos os dados da tabela ou apagar para apagar um produto especifico: ")
-if select == 'truncate':
+select = input("1-Truncate; 2-apagar; 3-Editar;: ")
+if select == '1':
     cursor.execute("TRUNCATE TABLE Projeto_Integrador")
-elif select == 'apagar':
-    condição = "COD_PROD = :código"
+elif select == '2':
     código = input("Digite o código do produto que deseja apagar: ")
-    cursor.executemany("DELETE FROM Projeto_Integrador WHERE " + condição, código=código)
+    deletar = "DELETE FROM Projeto_Integrador WHERE COD_PROD = :código"
+    cursor.execute(deletar, código=código)
+    connection.commit()
+
+
+
 
 cursor.close
 connection.close()
