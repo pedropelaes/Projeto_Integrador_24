@@ -95,7 +95,34 @@ while sel1 != 5:
         cursor.executemany("INSERT INTO Projeto_Integrador (COD_PROD, NOME_PROD, DESCRICAO, CP, CF, CV, IV, ML) VALUES (:1, :2, :3, :4, :5, :6, :7, :8)", dados)
         print("Valores inseridos no banco de dados")
         connection.commit()
-
+    
+    #alterar produtos
+    if sel1 == 2:
+        codsql=""
+        sel2 = int(input("Digite o código do produto que deseja alterar: "))
+        cód=[sel2]
+        cursor.execute("select * from Projeto_Integrador WHERE cod_prod = :1 ", cód)
+        prod=cursor.fetchall()
+        print(prod)
+        p1 = input("Deseja alterar o nome do produto? S/N: ").upper()
+        if p1 == 'S':
+            nome=input("Digite o novo nome: ")
+            strnome="NOME_PROD="
+            codsql=strnome+"'"+nome+"'"
+            p1 = input("Deseja alterar a descrição S/N: ").upper()
+        else:
+            p1 = input("Deseja alterar a descrição S/N: ").upper()
+        if p1 == 'S':
+            desc=input("Digite a nova descrição: ")
+            strdesc="DESCRICAO="
+            codsql+=","+strdesc+"'"+desc+"'"
+        where="WHERE COD_PROD="
+        cod=str(sel2)
+        update="UPDATE Projeto_Integrador set "
+        codsql='"""'+update+codsql+' '+where+cod+'"""'
+        codsql.encode('unicode-escape')
+        cursor.execute(codsql)
+        connection.commit()
     if sel1 == 4:
         #seleção dos itens na tabela
         lista=[]
