@@ -4,7 +4,7 @@ import getpass
 
 #conexão ao sql
 userpwd = getpass.getpass("Enter password: ")
-connection = oracledb.connect(user="PEDRO", password=userpwd,
+connection = oracledb.connect(user="PEDROMALINCONICO", password=userpwd,
                               host="localhost", port=1521, service_name="XEPDB1")
 cursor = connection.cursor()
 

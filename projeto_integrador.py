@@ -14,25 +14,26 @@ while sel1 != 5:
 
 
     #Menu7
+    print("-"*50)
     sel1=int(input("Digite: \n 1-Inserir Produto \n 2-Alterar Produto \n 3-Apagar Produto \n 4-Listar Produtos \n 5-Sair \n"))
-
+    print("-"*50)
 
     if sel1 == 1:
-        #Leitura dos dados:
-        cod_prod=int(input("Digite o código do produto: "))
-        nome_prod=str(input("Digite o nome do produto: "))
-        descricao=str(input("Descreva o produto: "))
-        CP=float(input("Digite o custo do produto(R$): "))
-        CF=float(input("Digite o custo fixo/adiministrativo(%): "))
-        CV=float(input("Digite a comissão de venda(%): "))
-        IV=float(input("Digite os impostos sobre a venda(%): "))
-        ML=float(input("Digite a margem de lucro desejada(%): "))
-
+        soma = 101
+        while soma>=100:
+            #Leitura dos dados:
+            cod_prod=int(input("Digite o código do produto: "))
+            nome_prod=str(input("Digite o nome do produto: "))
+            descricao=str(input("Descreva o produto: "))
+            CP=float(input("Digite o custo do produto(R$): "))
+            CF=float(input("Digite o custo fixo/adiministrativo(%): "))
+            CV=float(input("Digite a comissão de venda(%): "))
+            IV=float(input("Digite os impostos sobre a venda(%): "))
+            ML=float(input("Digite a margem de lucro desejada(%): "))
+            soma=CF+CV+IV+ML
+            if soma>100:
+                print("Valores não permitidos, tente novamente.")   
         #Calculo do preço de venda:
-        soma=CF+CV+IV+ML
-        if soma>100:
-            soma = soma * -1
-
         PV = CP/(1-((soma)/100))
         #################################
 
@@ -72,19 +73,19 @@ while sel1 != 5:
         #Classificação de lucro:
         if ML>20:
             print(tabulate([["Lucro alto"]], tablefmt="rounded_outline"))
-            print()
+            print("-"*50)
         elif ML>10 and ML<=20:
             print(tabulate([["Lucro médio"]], tablefmt="rounded_outline"))
-            print()
+            print("-"*50)
         elif ML>0 and ML<=10:
             print(tabulate([["Lucro baixo"]], tablefmt="rounded_outline"))
-            print()
+            print("-"*50)
         elif ML==0:
             print(tabulate([["Equilibro"]], tablefmt="rounded_outline"))
-            print()
+            print("-"*50)
         elif ML<0:
             print(tabulate([["Prejuízo"]], tablefmt="rounded_outline"))
-            print()
+            print("-"*50)
         ######################################
 
         #Inserção dos valores no banco de dados
@@ -101,25 +102,68 @@ while sel1 != 5:
         cód=[sel2]
         cursor.execute("select * from Projeto_Integrador WHERE cod_prod = :1 ", cód)
         prod=cursor.fetchall()
-        print(prod)
-        p1 = input("Deseja alterar o nome do produto? S/N: ").upper()
+        print(f"{prod} \n {"-"*50}")
+        p1 = input("Deseja alterar o nome do produto? S/N: ").upper() 
         if p1 == "S":
             novovalor=input("Digite o novo nome: ")
             alt=[(novovalor, sel2)]
             cursor.executemany("""UPDATE Projeto_Integrador set NOME_PROD=:1 WHERE COD_PROD=:2""", alt)
             connection.commit()
+            print("-"*50)
         p1 = input("Deseja alterar a descrição do produto? S/N: ").upper()
         if p1 == "S":
             novovalor=input("Digite a nova descrição: ")  
             alt=[(novovalor, sel2)]
             cursor.executemany("""UPDATE Projeto_Integrador set DESCRICAO=:1 WHERE COD_PROD=:2""", alt)
             connection.commit()
-    
+            print("-"*50)
+        p1 = input("Deseja alterar o custo do produto? S/N: ").upper()
+        if p1 == "S":
+            novovalor=float(input("Digite o novo custo: "))
+            alt=[(novovalor, sel2)]
+            cursor.executemany("""UPDATE Projeto_Integrador set CP=:1 WHERE COD_PROD=:2""", alt)
+            connection.commit()
+            print("-"*50)
+        p1 = input("Deseja alterar o custo fixo do produto? S/N: ").upper()
+        if p1 == "S":
+            novovalor=float(input("Digite o novo custo fixo: "))
+            alt=[(novovalor, sel2)]
+            cursor.executemany("""UPDATE Projeto_Integrador set CF=:1 WHERE COD_PROD=:2""", alt)
+            connection.commit()
+            print("-"*50)
+        p1 = input("Deseja alterar a comissão de venda do produto? S/N: ").upper()
+        if p1 == "S":
+            novovalor=float(input("Digite a nova comissão de venda do produto: "))
+            alt=[(novovalor, sel2)]
+            cursor.executemany("""UPDATE Projeto_Integrador set CV=:1 WHERE COD_PROD=:2""", alt)
+            connection.commit()
+            print("-"*50)
+        p1 = input("Deseja alterar os impostos do produto? S/N: ").upper()
+        if p1 == "S":
+            novovalor=float(input("Digite o novo imposto do produto: "))
+            alt=[(novovalor, sel2)]
+            cursor.executemany("""UPDATE Projeto_Integrador set IV=:1 WHERE COD_PROD=:2""", alt)
+            connection.commit()
+            print("-"*50)
+        p1 = input("Deseja alterar a margem de lucro do produto? S/N: ").upper()
+        if p1 == "S":
+            novovalor=float(input("Digite a nova margem de lucro: "))
+            alt=[(novovalor, sel2)]
+            cursor.executemany("""UPDATE Projeto_Integrador set ML=:1 WHERE COD_PROD=:2""", alt)
+            connection.commit()
+            print("-"*50)
+        print("Alterações feitas.")
 
     if sel1 == 3: #apagar dados
         select = input("Digite:\n 1-Apagar todos os produtos\n 2-Apagar produto específico: ")
+        print("-"*50)
         if select == '1':
-            cursor.execute("TRUNCATE TABLE Projeto_Integrador")
+            confirmar=input("Deseja mesmo apagar todos os produtos do banco de dados? S/N: ").upper()
+            if confirmar == "S":
+                cursor.execute("TRUNCATE TABLE Projeto_Integrador")
+                print(f"{'-'*50}\nBanco de dados zerado.")
+            else:
+                print(f"{'-'*50}\nOperação cancelada.")
         elif select == '2':
             código = input("Digite o código do produto que deseja apagar: ")
             cod=[código]
@@ -129,8 +173,9 @@ while sel1 != 5:
             if select == "S":
                 cursor.execute("DELETE FROM Projeto_Integrador WHERE COD_PROD = :1", cod)
                 connection.commit()
-                print("Produto apagado.")
-
+                print(f"{'-'*50}\nProduto apagado.")
+            else:
+                print(f"{'-'*50}\nOperação cancelada.")
 
     if sel1 == 4:  #seleção dos itens na tabela
             lista=[]
@@ -188,23 +233,23 @@ while sel1 != 5:
                 cabeçalho=[[lista[i][0], lista[i][1], lista[i][2]]]
                 print(tabulate(cabeçalho, tablefmt="rounded_outline"))
                 print(tabulate(tabela, headers="firstrow", tablefmt="rounded_outline", floatfmt=".2f"))
-
+                
                 #Classificação de lucro:
                 if ML>20:
                     print(tabulate([["Lucro alto"]], tablefmt="rounded_outline"))
-                    print()
+                    print("-"*50)
                 elif ML>10 and ML<=20:
                     print(tabulate([["Lucro médio"]], tablefmt="rounded_outline"))
-                    print()
+                    print("-"*50)
                 elif ML>0 and ML<=10:
                     print(tabulate([["Lucro baixo"]], tablefmt="rounded_outline"))
-                    print()
+                    print("-"*50)
                 elif ML==0:
                     print(tabulate([["Equilibro"]], tablefmt="rounded_outline"))
-                    print()
+                    print("-"*50)
                 elif ML<0:
                     print(tabulate([["Prejuízo"]], tablefmt="rounded_outline"))
-                    print()
+                    print("-"*50)
                 ######################################
 
     cursor.close
