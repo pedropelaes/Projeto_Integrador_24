@@ -12,7 +12,25 @@ while sel1 != 5:
                                 host="localhost", port=1521, service_name="XEPDB1")
     cursor = connection.cursor()
 
+    #função que classifica o lucro
+    def classificaçãolucro(margem):
+        if margem>20:
+            print(tabulate([["Lucro alto"]], tablefmt="rounded_outline"))
+            print("-"*50)
+        elif margem>10 and ML<=20:
+            print(tabulate([["Lucro médio"]], tablefmt="rounded_outline"))
+            print("-"*50)
+        elif margem>0 and ML<=10:
+            print(tabulate([["Lucro baixo"]], tablefmt="rounded_outline"))
+            print("-"*50)
+        elif margem==0:
+            print(tabulate([["Equilibro"]], tablefmt="rounded_outline"))
+            print("-"*50)
+        elif margem<0:
+            print(tabulate([["Prejuízo"]], tablefmt="rounded_outline"))
+            print("-"*50)
 
+    
     #Menu7
     print("-"*50)
     sel1=int(input("Digite: \n 1-Inserir Produto \n 2-Alterar Produto \n 3-Apagar Produto \n 4-Listar Produtos \n 5-Sair \n"))
@@ -59,33 +77,21 @@ while sel1 != 5:
         tabela = [
             ["Descrição", "Valor", "%"],
             ["A.Preço de Venda:", PV, "100%"],
-            ["B.Custo de Aquisição:", CP, f"{PCA}%"],
-            ["C.Receita Bruta(A-B):", RB, f"{PRB}%"],
-            ["D.Custo Fixo/Administrativo:", VCF, f"{CF}%"],
-            ["E.Comissão de vendas:", VCV, f"{CV}%"],
-            ["F.Impostos:", VI, f"{IV}%"],
-            ["G.Outros Custos(D+E+F):", OC, f"{POC}%"],
-            ["H.Rentabilidade(C-G):", R, f"{ML}%"]
+            ["B.Custo de Aquisição:", CP, f"{round(PCA)}%"],
+            ["C.Receita Bruta(A-B):", RB, f"{round(PRB)}%"],
+            ["D.Custo Fixo/Administrativo:", VCF, f"{round(CF)}%"],
+            ["E.Comissão de vendas:", VCV, f"{round(CV)}%"],
+            ["F.Impostos:", VI, f"{round(IV)}%"],
+            ["G.Outros Custos(D+E+F):", OC, f"{round(POC)}%"],
+            ["H.Rentabilidade(C-G):", R, f"{round(ML)}%"]
         ]
 
+        cabeçalho=[[cod_prod, nome_prod, descricao]]
+        print(tabulate(cabeçalho, tablefmt="rounded_outline"))
         print(tabulate(tabela, headers="firstrow", tablefmt="rounded_outline", floatfmt=".2f"))
 
         #Classificação de lucro:
-        if ML>20:
-            print(tabulate([["Lucro alto"]], tablefmt="rounded_outline"))
-            print("-"*50)
-        elif ML>10 and ML<=20:
-            print(tabulate([["Lucro médio"]], tablefmt="rounded_outline"))
-            print("-"*50)
-        elif ML>0 and ML<=10:
-            print(tabulate([["Lucro baixo"]], tablefmt="rounded_outline"))
-            print("-"*50)
-        elif ML==0:
-            print(tabulate([["Equilibro"]], tablefmt="rounded_outline"))
-            print("-"*50)
-        elif ML<0:
-            print(tabulate([["Prejuízo"]], tablefmt="rounded_outline"))
-            print("-"*50)
+        classificaçãolucro(ML)
         ######################################
 
         #Inserção dos valores no banco de dados
@@ -235,21 +241,7 @@ while sel1 != 5:
                 print(tabulate(tabela, headers="firstrow", tablefmt="rounded_outline", floatfmt=".2f"))
                 
                 #Classificação de lucro:
-                if ML>20:
-                    print(tabulate([["Lucro alto"]], tablefmt="rounded_outline"))
-                    print("-"*50)
-                elif ML>10 and ML<=20:
-                    print(tabulate([["Lucro médio"]], tablefmt="rounded_outline"))
-                    print("-"*50)
-                elif ML>0 and ML<=10:
-                    print(tabulate([["Lucro baixo"]], tablefmt="rounded_outline"))
-                    print("-"*50)
-                elif ML==0:
-                    print(tabulate([["Equilibro"]], tablefmt="rounded_outline"))
-                    print("-"*50)
-                elif ML<0:
-                    print(tabulate([["Prejuízo"]], tablefmt="rounded_outline"))
-                    print("-"*50)
+                classificaçãolucro(ML)
                 ######################################
 
     cursor.close
