@@ -23,7 +23,7 @@ cont=0 #variavel cont aumenta de 1 em 1 é usada no if para alternar as listas e
 for i in range(len(nome)):
     cont+=1
     letra=nome[i]
-    chave=str(letra)
+    chave=letra
     x=alfabeto[chave]
     print(f"{nome[i]}->{alfabeto[chave]}")
     if cont % 2 != 0:
@@ -71,7 +71,7 @@ for i in range(len(c1)):
 for i in range(len(silabas)):
     valor=silabas[i]
     for key, value in alfabeto.items():
-        if value == valor or value == valor:
+        if value == valor:
             palavra_criptografada += key
 
 print(palavra_criptografada)
