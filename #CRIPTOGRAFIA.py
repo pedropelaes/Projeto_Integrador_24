@@ -5,9 +5,9 @@ palavra_criptografada=""
 alfabeto = {
     "A": 1, "B": 2, "C": 3, "D": 4, "E": 5, "F": 6, "G": 7, "H": 8, "I": 9, "J": 10,
     "K": 11, "L": 12, "M": 13, "N": 14, "O": 15, "P": 16, "Q": 17, "R": 18, "S": 19,
-    "T": 20, "U": 21, "V": 22, "W": 23, "X": 24, "Y": 25, "Z": 0
+    "T": 20, "U": 21, "V": 22, "W": 23, "X": 24, "Y": 25, " ":0, "Z": 26
 }
-
+print(alfabeto.keys())
 #para pegar o valor da letra: alfabeto["letra"]
 
 #matriz codificadora
@@ -42,18 +42,18 @@ P=np.array([l1,
 C=A @ P
 print(f"{A}x{P}={C}")
 
-#pmodulo(C,26)
+#pmodulo(C,27)
 c1=[]
 c2=[]
 for i in range(len(C[0])): #linha1 da matriz codificada 
     n = C[0][i]
-    if n >= 26:
-        n=n%26
+    if n >= 27:
+        n=n%27
     c1.append(n)
 for i in range(len(C[1])): #linha2 da matriz codificada
     n= C[1][i]
-    if n>= 26:
-        n=n%26
+    if n>= 27:
+        n=n%27
     c2.append(n)
 
 #matriz codificada pós pmodulo
