@@ -209,17 +209,29 @@ while sel1 != 5:
     connection = oracledb.connect(user="PEDROMALINCONICO", password=userpwd,
                                 host="localhost", port=1521, service_name="XEPDB1")
     cursor = connection.cursor()
+
+    def checarcodigo(codprod):
+        cursor.execute("SELECT COD_PROD FROM Projeto_Integrador")
+        codigos=cursor.fetchall()
+        if codprod in codigos[0]:
+            return(True)
+        return(False)
     
     #Menu7
+    print("-"*50)
+    print("Sistema de Cadastro de Produtos")
     print("-"*50)
     sel1=int(input("Digite: \n 1-Inserir Produto \n 2-Alterar Produto \n 3-Apagar Produto \n 4-Listar Produtos \n 5-Sair \n"))
     print("-"*50)
 
     if sel1 == 1: #inserir produtos
         soma = 101
+        
         while soma>=100:
             #Leitura dos dados:
             cod_prod=int(input("Digite o código do produto: "))
+            while checarcodigo(cod_prod):
+                cod_prod=int(input("Código ja existente no banco de dados, digite outro: "))
             nome_prod=str(input("Digite o nome do produto: "))
             descricao=str(input("Descreva o produto(apenas letras): ")).upper()
             CP=float(input("Digite o custo do produto(R$): "))
@@ -291,18 +303,24 @@ while sel1 != 5:
         produto_especifico(cód)
         p1 = input("Deseja alterar o nome do produto? S/N: ").upper()
         novasoma=101
+        print("-"*50)
         while novasoma>100:
-            print("Caso o programa pessa novamente os valores, a soma de CF, CV, IV e ML é maior do que 100.")
+            print("Caso o programa peça novamente os valores, a soma de CF, CV, IV e ML é maior do que 100.")
             if p1 == "S":
                 novovalor=input("Digite o novo nome: ")
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set NOME_PROD=:1 WHERE COD_PROD=:2""", alt)
                 print("-"*50)
+            else:
+                print("-"*50)
             p1 = input("Deseja alterar a descrição do produto? S/N: ").upper()
             if p1 == "S":
-                novovalor=input("Digite a nova descrição: ").upper() 
-                alt=[(novovalor, sel2)]
+                novovalor=input("Digite a nova descrição: ").upper()
+                desc=criptografia(novovalor) 
+                alt=[(desc, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set DESCRICAO=:1 WHERE COD_PROD=:2""", alt)               
+                print("-"*50)
+            else:
                 print("-"*50)
             p1 = input("Deseja alterar o custo do produto? S/N: ").upper()
             if p1 == "S":
@@ -310,26 +328,31 @@ while sel1 != 5:
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set CP=:1 WHERE COD_PROD=:2""", alt)
                 print("-"*50)
+            else:
+                print("-"*50)
             p1 = input("Deseja alterar o custo fixo do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite o novo custo fixo: "))
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set CF=:1 WHERE COD_PROD=:2""", alt)
-                
+                print("-"*50)
+            else:
                 print("-"*50)
             p1 = input("Deseja alterar a comissão de venda do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite a nova comissão de venda do produto: "))
                 alt=[(novovalor, sel2)]
-                cursor.executemany("""UPDATE Projeto_Integrador set CV=:1 WHERE COD_PROD=:2""", alt)
-                
+                cursor.executemany("""UPDATE Projeto_Integrador set CV=:1 WHERE COD_PROD=:2""", alt)            
+                print("-"*50)
+            else:
                 print("-"*50)
             p1 = input("Deseja alterar os impostos do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite o novo imposto do produto: "))
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set IV=:1 WHERE COD_PROD=:2""", alt)
-                
+                print("-"*50)
+            else:
                 print("-"*50)
             p1 = input("Deseja alterar a margem de lucro do produto? S/N: ").upper()
             if p1 == "S":
@@ -347,7 +370,7 @@ while sel1 != 5:
         print("Alterações feitas.")
 
     if sel1 == 3: #apagar dados
-        select = input("Digite:\n 1-Apagar todos os produtos\n 2-Apagar produto específico: ")
+        select = input("Digite:\n 1-Apagar todos os produtos\n 2-Apagar produto específico\n: ")
         print("-"*50)
         if select == '1':
             confirmar=input("Deseja mesmo apagar todos os produtos do banco de dados? S/N: ").upper()
@@ -357,17 +380,21 @@ while sel1 != 5:
             else:
                 print(f"{'-'*50}\nOperação cancelada.")
         elif select == '2':
-            código = input("Digite o código do produto que deseja apagar: ")
+            código = int(input("Digite o código do produto que deseja apagar: "))
             cod=[código]
-            cursor.execute("SELECT * FROM Projeto_Integrador WHERE COD_PROD = :1", cod)
-            print(cursor.fetchall())
-            select=input("Deseja mesmo deletar o produto? S/N: ").upper()
-            if select == "S":
-                cursor.execute("DELETE FROM Projeto_Integrador WHERE COD_PROD = :1", cod)
-                connection.commit()
-                print(f"{'-'*50}\nProduto apagado.")
+            while not checarcodigo(cod):
+                print("-"*50)
+                print("Produto inexistente")
+                break
             else:
-                print(f"{'-'*50}\nOperação cancelada.")
+                produto_especifico(cod)
+                select=input("Deseja mesmo deletar o produto? S/N: ").upper()
+                if select == "S":
+                    cursor.execute("DELETE FROM Projeto_Integrador WHERE COD_PROD = :1", cod)
+                    connection.commit()
+                    print(f"{'-'*50}\nProduto apagado.")
+                else:
+                    print(f"{'-'*50}\nOperação cancelada.")
 
     if sel1 == 4:  #seleção dos itens na tabela
             produto=[]
