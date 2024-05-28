@@ -12,7 +12,7 @@ alfabeto = {
 Ainv=np.array([[22, -33],
                [-11, 44]])
 
-pcripto='WPBVNVDJNCLHWPXOMYSFGGUEFAQWOJFDUTKTFOTEDGDACFRRASH TEJYZRDAJXIIJYFOOESRFOJYDAPPAEUTRRFOJBCUJXLOR'
+pcripto=input("Digite a palavra à ser decifrada: ")
 l1=[]
 l2=[]
 
