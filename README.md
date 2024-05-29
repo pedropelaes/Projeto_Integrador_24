@@ -5,4 +5,3 @@ Bibliotecas Utilizadas:
 Tabulate:https://pypi.org/project/tabulate/
 Oracledb:https://pypi.org/project/oracledb/
 Getpass:https://docs.python.org/pt-br/3/library/getpass.html
-Numpy: https://numpy.org

@@ -1,5 +1,4 @@
 #DESCRIPTOGRAFIA
-import numpy as np
 palavra_descriptografada=""
 
 alfabeto = {
@@ -9,8 +8,8 @@ alfabeto = {
 }
 
 #matriz codificadora inversa
-Ainv=np.array([[22, -33],
-               [-11, 44]])
+Ainv=([22, -33],
+      [-11, 44])
 
 pcripto=input("Digite a palavra à ser decifrada: ")
 l1=[]
@@ -32,10 +31,19 @@ if len(l2)<len(l1):
     l2.append(ultimoelemento)
 print(f"{l1}\n{l2}")
 
-C=np.array([l1,
-             l2])
+C=([l1,
+    l2])
 
-P=Ainv @ C
+#matriz P
+p1=[]
+p2=[]
+for i in range(len(l1)):
+    x = (Ainv[0][0] * l1[i]) + (Ainv[0][1] * l2[i])
+    p1.append(x)
+    y = (Ainv[1][0] * l1[i]) + (Ainv[1][1] * l2[i])
+    p2.append(y)
+P=([p1,
+    p2])
 print(P[0], P[1])
 
 #pmodulo(P,27)

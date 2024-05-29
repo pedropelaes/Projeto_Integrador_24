@@ -1,27 +1,29 @@
 from tabulate import tabulate
 import oracledb
 import getpass
-import numpy as np
 
-userpwd = getpass.getpass("Enter password: ")
+userpwd = getpass.getpass("Digite a senha: ")
+while userpwd != '123456':
+    userpwd = getpass.getpass("Senha errada, digite novamente: ")
+
 sel1=0
 #função que classifica o lucro
 def classificaçãolucro(margem):
         if margem>20:
             print(tabulate([["Lucro alto"]], tablefmt="rounded_outline"))
-            print("-"*50)
+            print("="*100)
         elif margem>10: 
             print(tabulate([["Lucro médio"]], tablefmt="rounded_outline"))
-            print("-"*50)
+            print("="*100)
         elif margem>0: 
             print(tabulate([["Lucro baixo"]], tablefmt="rounded_outline"))
-            print("-"*50)
+            print("="*100)
         elif margem==0:
             print(tabulate([["Equilibro"]], tablefmt="rounded_outline"))
-            print("-"*50)
+            print("="*100)
         else:
             print(tabulate([["Prejuízo"]], tablefmt="rounded_outline"))
-            print("-"*50)
+            print("="*100)
 
 def criptografia(descrição):
     descricao_criptografada=""
@@ -32,8 +34,8 @@ def criptografia(descrição):
         "T": 20, "U": 21, "V": 22, "W": 23, "X": 24, "Y": 25, " ":0, "Z": 26
     }
     #matriz codificadora
-    A= np.array([[4, 3],
-                [1, 2]])
+    A=([4, 3],
+       [1, 2])
     l1=[]
     l2=[]
     cont=0 #variavel cont aumenta de 1 em 1 é usada no if para alternar as produtos em que se insere o valor das letras
@@ -50,28 +52,36 @@ def criptografia(descrição):
         ultimoelemento=l1[len(l1)-1]
         l2.append(ultimoelemento)
     #matriz P da palavra a ser codificada
-    P=np.array([l1,
-                l2])
+    P=([l1,
+        l2])
     #matriz codificada
-    C=A @ P
-    #pmodulo(C,27)
     c1=[]
     c2=[]
+    for i in range(len(l1)):
+        x = (A[0][0] * l1[i]) + (A[0][1] * l2[i])
+        c1.append(x)
+        y = (A[1][0] * l1[i]) + (A[1][1] * l2[i])
+        c2.append(y)
+    C=([c1,
+        c2])
+    #pmodulo(C,27)
+    C1=[]
+    C2=[]
     for i in range(len(C[0])): #linha1 da matriz codificada 
         n = C[0][i]
         if n >= 27:
             n=n%27
-        c1.append(n)
+        C1.append(n)
     for i in range(len(C[1])): #linha2 da matriz codificada
         n= C[1][i]
         if n>= 27:
             n=n%27
-        c2.append(n)
+        C2.append(n)
     #organização dos valores das silabas
     silabas=[]
-    for i in range(len(c1)):
-        silabas.append(c1[i])
-        silabas.append(c2[i])
+    for i in range(len(C1)):
+        silabas.append(C1[i])
+        silabas.append(C2[i])
     #busca no dicionário as chaves(letras) equivalentes aos valores da letras codificadas
     for i in range(len(silabas)):
         valor=silabas[i]
@@ -88,8 +98,8 @@ def decifragem(descrição_criptografada):
         "T": 20, "U": 21, "V": 22, "W": 23, "X": 24, "Y": 25, "Z": 26, " ": 0
     }
     #matriz codificadora inversa
-    Ainv=np.array([[22, -33],
-                   [-11, 44]])
+    Ainv=([22, -33],
+          [-11, 44])
     l1=[]
     l2=[]
     cont=0
@@ -105,9 +115,18 @@ def decifragem(descrição_criptografada):
     if len(l2)<len(l1):
         ultimoelemento=l1[len(l1)-1]
         l2.append(ultimoelemento)
-    C=np.array([l1,
-                l2])
-    P=Ainv @ C
+    C=([l1,
+        l2])
+    #matriz P
+    p1=[]
+    p2=[]
+    for i in range(len(l1)):
+        x = (Ainv[0][0] * l1[i]) + (Ainv[0][1] * l2[i])
+        p1.append(x)
+        y = (Ainv[1][0] * l1[i]) + (Ainv[1][1] * l2[i])
+        p2.append(y)
+    P=([p1,
+        p2])
     #pmodulo(P,27)
     p1=[]
     p2=[]
@@ -202,6 +221,9 @@ def produto_especifico(código):
     classificaçãolucro(ML)
     ######################################
 
+def linha():
+    print("="*100)
+
 while sel1 != 5:
     
     #conexão ao banco de dados
@@ -213,32 +235,43 @@ while sel1 != 5:
     def checarcodigo(codprod):
         cursor.execute("SELECT COD_PROD FROM Projeto_Integrador")
         codigos=cursor.fetchall()
-        if codprod in codigos[0]:
-            return(True)
-        return(False)
+        for i in range(len(codigos)):
+            if codprod in codigos[i]:
+                return(True)
     
     #Menu7
-    print("-"*50)
-    print("Sistema de Cadastro de Produtos")
-    print("-"*50)
-    sel1=int(input("Digite: \n 1-Inserir Produto \n 2-Alterar Produto \n 3-Apagar Produto \n 4-Listar Produtos \n 5-Sair \n"))
-    print("-"*50)
+    print(f"|{'='*100}|")
+    print("\t\t\t\t | Sistema de Cadastro de Produtos |\n")
+    print(f"|{'='*100}|")
+    print(f"\t 1-Inserir Produto | 2-Alterar Produto | 3-Apagar Produto | 4-Listar Produtos | 5-Sair ")
+    print(f"|{'='*100}|")
+    sel1=int(input(f"| Selecionar:"))
+    print(f"{'='*100}")
 
     if sel1 == 1: #inserir produtos
         soma = 101
         
         while soma>=100:
             #Leitura dos dados:
-            cod_prod=int(input("Digite o código do produto: "))
+            linha()
+            cod_prod=int(input("|Digite o código do produto: "))
             while checarcodigo(cod_prod):
-                cod_prod=int(input("Código ja existente no banco de dados, digite outro: "))
-            nome_prod=str(input("Digite o nome do produto: "))
-            descricao=str(input("Descreva o produto(apenas letras): ")).upper()
-            CP=float(input("Digite o custo do produto(R$): "))
-            CF=float(input("Digite o custo fixo/adiministrativo(%): "))
-            CV=float(input("Digite a comissão de venda(%): "))
-            IV=float(input("Digite os impostos sobre a venda(%): "))
-            ML=float(input("Digite a margem de lucro desejada(%): "))
+                cod_prod=int(input("|Código ja existente no banco de dados, digite outro: "))
+                checarcodigo(cod_prod)
+            linha()
+            nome_prod=str(input("|Digite o nome do produto: "))
+            linha()
+            descricao=str(input("|Descreva o produto(apenas letras): ")).upper()
+            linha()
+            CP=float(input("|Digite o custo do produto(R$): "))
+            linha()
+            CF=float(input("|Digite o custo fixo/adiministrativo(%): "))
+            linha()
+            CV=float(input("|Digite a comissão de venda(%): "))
+            linha()
+            IV=float(input("|Digite os impostos sobre a venda(%): "))
+            linha()
+            ML=float(input("|Digite a margem de lucro desejada(%): "))
             soma=CF+CV+IV+ML
             if soma>100:
                 print("Valores não permitidos, tente novamente.")   
@@ -303,63 +336,63 @@ while sel1 != 5:
         produto_especifico(cód)
         p1 = input("Deseja alterar o nome do produto? S/N: ").upper()
         novasoma=101
-        print("-"*50)
+        print("="*100)
         while novasoma>100:
             print("Caso o programa peça novamente os valores, a soma de CF, CV, IV e ML é maior do que 100.")
             if p1 == "S":
                 novovalor=input("Digite o novo nome: ")
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set NOME_PROD=:1 WHERE COD_PROD=:2""", alt)
-                print("-"*50)
+                print("="*100)
             else:
-                print("-"*50)
+                print("="*100)
             p1 = input("Deseja alterar a descrição do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=input("Digite a nova descrição: ").upper()
                 desc=criptografia(novovalor) 
                 alt=[(desc, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set DESCRICAO=:1 WHERE COD_PROD=:2""", alt)               
-                print("-"*50)
+                print("="*100)
             else:
-                print("-"*50)
+                print("="*100)
             p1 = input("Deseja alterar o custo do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite o novo custo: "))
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set CP=:1 WHERE COD_PROD=:2""", alt)
-                print("-"*50)
+                print("="*100)
             else:
-                print("-"*50)
+                print("="*100)
             p1 = input("Deseja alterar o custo fixo do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite o novo custo fixo: "))
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set CF=:1 WHERE COD_PROD=:2""", alt)
-                print("-"*50)
+                print("="*100)
             else:
-                print("-"*50)
+                print("="*100)
             p1 = input("Deseja alterar a comissão de venda do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite a nova comissão de venda do produto: "))
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set CV=:1 WHERE COD_PROD=:2""", alt)            
-                print("-"*50)
+                print("="*100)
             else:
-                print("-"*50)
+                print("="*100)
             p1 = input("Deseja alterar os impostos do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite o novo imposto do produto: "))
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set IV=:1 WHERE COD_PROD=:2""", alt)
-                print("-"*50)
+                print("="*100)
             else:
-                print("-"*50)
+                print("="*100)
             p1 = input("Deseja alterar a margem de lucro do produto? S/N: ").upper()
             if p1 == "S":
                 novovalor=float(input("Digite a nova margem de lucro: "))
                 alt=[(novovalor, sel2)]
                 cursor.executemany("""UPDATE Projeto_Integrador set ML=:1 WHERE COD_PROD=:2""", alt)
-                print("-"*50)
+                print("="*100)
             cursor.execute('SELECT CF, CV, IV, ML FROM Projeto_Integrador WHERE COD_PROD=:1 ', cód)
             valores=cursor.fetchall()
             print("CF/CV/IV/ML")
@@ -371,19 +404,19 @@ while sel1 != 5:
 
     if sel1 == 3: #apagar dados
         select = input("Digite:\n 1-Apagar todos os produtos\n 2-Apagar produto específico\n: ")
-        print("-"*50)
+        print("="*100)
         if select == '1':
             confirmar=input("Deseja mesmo apagar todos os produtos do banco de dados? S/N: ").upper()
             if confirmar == "S":
                 cursor.execute("TRUNCATE TABLE Projeto_Integrador")
-                print(f"{'-'*50}\nBanco de dados zerado.")
+                print(f"{'='*100}\nBanco de dados zerado.")
             else:
-                print(f"{'-'*50}\nOperação cancelada.")
+                print(f"{'='*100}\nOperação cancelada.")
         elif select == '2':
             código = int(input("Digite o código do produto que deseja apagar: "))
             cod=[código]
             while not checarcodigo(cod):
-                print("-"*50)
+                print("="*100)
                 print("Produto inexistente")
                 break
             else:
@@ -392,9 +425,9 @@ while sel1 != 5:
                 if select == "S":
                     cursor.execute("DELETE FROM Projeto_Integrador WHERE COD_PROD = :1", cod)
                     connection.commit()
-                    print(f"{'-'*50}\nProduto apagado.")
+                    print(f"{'-'*100}\nProduto apagado.")
                 else:
-                    print(f"{'-'*50}\nOperação cancelada.")
+                    print(f"{'-'*100}\nOperação cancelada.")
 
     if sel1 == 4:  #seleção dos itens na tabela
             produto=[]

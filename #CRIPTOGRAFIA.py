@@ -1,5 +1,4 @@
 #CRIPTOGRAFIA 
-import numpy as np
 palavra_criptografada=""
 
 alfabeto = {
@@ -11,8 +10,8 @@ print(alfabeto.keys())
 #para pegar o valor da letra: alfabeto["letra"]
 
 #matriz codificadora
-A= np.array([[4, 3],
-             [1, 2]])
+A=([4, 3],
+   [1, 2])
 
 #string a ser decodificada
 nome=input("Digite a palavra a ser codificada: ").upper()
@@ -33,39 +32,48 @@ for i in range(len(nome)):
 if len(l2) < len(l1):
     ultimoelemento=l1[len(l1)-1]
     l2.append(ultimoelemento)
-print(f"{l1}\n{l2}")
 #matriz P da palavra a ser codificada
-P=np.array([l1,
-            l2])
+P=([l1,
+    l2])
+print(P)
 
 #matriz codificada
-C=A @ P
+c1=[]
+c2=[]
+for i in range(len(l1)):
+   x = (A[0][0] * l1[i]) + (A[0][1] * l2[i])
+   c1.append(x)
+   y = (A[1][0] * l1[i]) + (A[1][1] * l2[i])
+   c2.append(y)
+C=([c1,
+    c2])
+
 print(f"{A}x{P}={C}")
 
 #pmodulo(C,27)
-c1=[]
-c2=[]
+C1=[]
+C2=[]
 for i in range(len(C[0])): #linha1 da matriz codificada 
     n = C[0][i]
     if n >= 27:
         n=n%27
-    c1.append(n)
+    C1.append(n)
 for i in range(len(C[1])): #linha2 da matriz codificada
     n= C[1][i]
     if n>= 27:
         n=n%27
-    c2.append(n)
+    C2.append(n)
 
 #matriz codificada pós pmodulo
-MC=[[c1, 
-     c2]]
+MC=[[C1, 
+     C2]]
 print(MC)
 
 #organização dos valores das silabas
 silabas=[]
-for i in range(len(c1)):
-    silabas.append(c1[i])
-    silabas.append(c2[i])
+for i in range(len(C1)):
+    silabas.append(C1[i])
+    silabas.append(C2[i])
 
 #busca no dicionário as chaves(letras) equivalentes aos valores da letras codificadas
 for i in range(len(silabas)):
