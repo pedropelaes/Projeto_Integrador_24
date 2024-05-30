@@ -415,7 +415,7 @@ while sel1 != 5:
         elif select == '2':
             código = int(input("Digite o código do produto que deseja apagar: "))
             cod=[código]
-            while not checarcodigo(cod):
+            while checarcodigo(cod):
                 print("="*100)
                 print("Produto inexistente")
                 break
