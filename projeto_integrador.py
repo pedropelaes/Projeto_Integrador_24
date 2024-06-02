@@ -249,7 +249,9 @@ while sel1 != 5:
     print(f"|{'='*100}|")
     print(f"\t 1-Inserir Produto | 2-Alterar Produto | 3-Apagar Produto | 4-Listar Produtos | 5-Sair ")
     print(f"|{'='*100}|")
-    sel1=int(input(f"| Selecionar:"))
+    sel1=int(input("| Selecionar:"))
+    while sel1<=0 or sel1>5:
+        sel1=int(input("| Opção invalida, selecione 1-5:"))
     linha()
 
     if sel1 == 1: #inserir produtos
@@ -285,7 +287,7 @@ while sel1 != 5:
 
 
         #Custo de aquisição:
-        PCA=(CP*100)//PV
+        PCA=(CP*100)/PV
         #Receita bruta:
         RB=PV-CP
         PRB=100-PCA
@@ -426,16 +428,18 @@ while sel1 != 5:
 
     if sel1 == 3: #apagar dados
         if checarseestavazio() != 0:
-            select = input("1-Apagar todos os produtos\n2-Apagar produto específico\n3-Cancelar\nSelecionar: ")
+            select = int(input("1-Apagar todos os produtos\n2-Apagar produto específico\n3-Cancelar\nSelecionar: "))
+            while select<=0 or select>3:
+                select = int(input("Opção invalida, selecione novamente: "))
             linha()
-            if select == '1':
+            if select == 1:
                 confirmar=input("|Deseja mesmo apagar todos os produtos do banco de dados? S/N: ").upper()
                 if confirmar == "S":
                     cursor.execute("TRUNCATE TABLE Projeto_Integrador")
                     print(f"{'='*100}\n|Banco de dados zerado.")
                 else:
                     print(f"{'='*100}\n|Operação cancelada.")
-            elif select == '2':
+            elif select == 2:
                 código = int(input("|Digite o código do produto que deseja apagar: "))
                 while not checarcodigo(código):
                     código = int(input("|Produto inexistente, digite outro código: "))       
