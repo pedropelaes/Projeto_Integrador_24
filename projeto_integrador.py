@@ -341,6 +341,18 @@ while sel1 != 5:
                 sel2 = int(input("|Produto inexistente, digite outro código: "))
             cód=[sel2]
             produto_especifico(cód)
+            p1 = input("|Deseja alterar o código do produto? S/N: ").upper()
+            if p1 == "S":
+                linha()
+                novocod=int(input("Digite o novo código:"))
+                while checarcodigo(novocod):
+                    novocod=int(input("Código já existen no banco de dados, digite outro:"))
+
+                alt=[(novocod, sel2)]
+                cursor.executemany("UPDATE Projeto_Integrador SET COD_PROD=:1 WHERE COD_PROD=:2", alt)
+                linha()
+                sel2=novocod
+                cód=[sel2]
             p1 = input("|Deseja alterar o nome do produto? S/N: ").upper()
             novasoma=101
             linha()
@@ -414,22 +426,22 @@ while sel1 != 5:
 
     if sel1 == 3: #apagar dados
         if checarseestavazio() != 0:
-            select = input("1-Apagar todos os produtos\n2-Apagar produto específico\nDigite: ")
+            select = input("1-Apagar todos os produtos\n2-Apagar produto específico\n3-Cancelar\nSelecionar: ")
             linha()
             if select == '1':
-                confirmar=input("Deseja mesmo apagar todos os produtos do banco de dados? S/N: ").upper()
+                confirmar=input("|Deseja mesmo apagar todos os produtos do banco de dados? S/N: ").upper()
                 if confirmar == "S":
                     cursor.execute("TRUNCATE TABLE Projeto_Integrador")
-                    print(f"{'='*100}\nBanco de dados zerado.")
+                    print(f"{'='*100}\n|Banco de dados zerado.")
                 else:
-                    print(f"{'='*100}\nOperação cancelada.")
+                    print(f"{'='*100}\n|Operação cancelada.")
             elif select == '2':
-                código = int(input("Digite o código do produto que deseja apagar: "))
+                código = int(input("|Digite o código do produto que deseja apagar: "))
                 while not checarcodigo(código):
-                    código = int(input("Produto inexistente, digite outro código: "))       
+                    código = int(input("|Produto inexistente, digite outro código: "))       
                 cod=[código]                 
                 produto_especifico(cod)
-                select=input("Deseja mesmo deletar o produto? S/N: ").upper()
+                select=input("|Deseja mesmo deletar o produto? S/N: ").upper()
                 if select == "S":
                     cursor.execute("DELETE FROM Projeto_Integrador WHERE COD_PROD = :1", cod)
                     connection.commit()
